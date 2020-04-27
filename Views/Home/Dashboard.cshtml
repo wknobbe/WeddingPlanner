@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Dashboard Page";
+}
+@model List<Wedding>
+
+<h1>Welcome to the Wedding Planner</h1>
+<a href="/logout">Logout</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Wedding</th>
+            <th>Date</th>
+            <th>Guests</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var wedding in Model)
+        {
+            <tr>
+                <td><a href="/wedding/info/@wedding.WeddingId">@wedding.WedderOne & @wedding.WedderTwo</a></td>
+                <td>@wedding.Date.ToLongDateString()</td>
+                <td>@wedding.Guests.Count</td>
+                <td>
+                    @if(wedding.Planner.UserId == ViewBag.User.UserId)
+                    {
+                        <a href="/delete/@wedding.WeddingId">Delete</a>
+                    }
+                    else
+                    {
+                        if(wedding.Guests.All(i => i.UserId != ViewBag.User.UserId))
+                        {
+                            <a href="/rsvp/@wedding.WeddingId/@ViewBag.User.UserId">RSVP</a>
+                        }
+                        else
+                        {
+                            <a href="/rsvp/undo/@wedding.WeddingId/@ViewBag.User.UserId">Un-RSVP</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a href="/wedding/new" class="btn btn-primary">New Wedding</a>
